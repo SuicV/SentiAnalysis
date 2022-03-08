@@ -7,7 +7,7 @@ __pycache__/
 # virtualenv
 venv/
 ENV/
-
+data/
 ### VirtualEnv template
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
