@@ -12,11 +12,11 @@ class TripAdvisorScrapper:
 		self.output = output
 		pass
 
-	def get_hotels(self):
+	def get_hotels(self, search_tag):
 		self.scrapper.get("https://www.tripadvisor.com")
 		# search
 		els = self.scrapper.find_element(By.CSS_SELECTOR, "input[placeholder='Where to?']")
-		els.send_keys("Morocco hotels")
+		els.send_keys(search_tag)
 		# submit request
 		els.submit()
 		# get listing items
@@ -60,9 +60,12 @@ class TripAdvisorScrapper:
 
 		return reviews
 
-	def start(self):
-		# self.get_hotels()
+	def start(self, search_tag):
+		# get links of hotels
+		self.get_hotels(search_tag)
 		links = pd.read_csv('./data/links.csv', header=0)
+
+		# get reviews of each hotel
 		reviews_df = pd.DataFrame(columns = ['listing_name', 'listing_score', 'username', 'review_score', 'review_title', 'review'])
 
 		for id, link in links["link"].items():

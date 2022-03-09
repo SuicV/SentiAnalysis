@@ -49,10 +49,11 @@ class ReviewPreprocessor:
 		"""
 		spell_checker = SpellChecker()
 		for index, review in self.__reviews.items():
-			words = re.findall("[\w'’]+", review)
+			words = re.findall("[\w']+", review)
 			for word in words:
-				correction = spell_checker.correction(word)
-				review = review.replace(word, correction)
+				if len(word) >= 2:
+					correction = spell_checker.correction(word)
+					review = review.replace(word, correction)
 			self.__reviews[index] = review
 		pass
 
@@ -79,6 +80,9 @@ class ReviewPreprocessor:
 		:return: __reviews
 		"""
 		self.remove_tags()
+		print("remove_tags done")
 		self.spelling_correction()
+		print("spelling_correction done")
 		self.remove_objective_sentences()
+		print("remove_objective_sentences done")
 		return self.__reviews
