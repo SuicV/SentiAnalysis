@@ -1,5 +1,5 @@
-import nltk
 from nltk.tokenize import sent_tokenize
+from nltk.tokenize import WhitespaceTokenizer
 from textblob import TextBlob
 from spellchecker import SpellChecker
 
@@ -48,8 +48,9 @@ class ReviewPreprocessor:
 		:return: None
 		"""
 		spell_checker = SpellChecker()
+		tokenizer = WhitespaceTokenizer()
 		for index, review in self.__reviews.items():
-			words = re.findall("[\w']+", review)
+			words = tokenizer.tokenize(review)
 			for word in words:
 				if len(word) >= 2:
 					correction = spell_checker.correction(word)
