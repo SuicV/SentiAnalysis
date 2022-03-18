@@ -16,12 +16,12 @@ class ExplicitAspectExtractor:
 			doc = self.__nlp(review)
 			for token in doc:
 				if token.pos_ == "NOUN" and not token.is_stop and not token.is_punct:
-					if token.text.lower() in self.__aspects.keys():
-						self.__aspects[token.text.lower()] += 1
+					if token.lemma_.lower() in self.__aspects.keys():
+						self.__aspects[token.lemma_.lower()] += 1
 					else:
-						self.__aspects[token.text] = 1
+						self.__aspects[token.lemma_.lower()] = 1
 				pass
-		pass
+		return self.__aspects
 
 	def get_frequent_aspects(self, threshold: int):
 		return Counter(self.__aspects).most_common(threshold)
