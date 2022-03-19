@@ -1,5 +1,6 @@
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import WhitespaceTokenizer
+from spacy.lang.en import English
 from textblob import TextBlob
 from spellchecker import SpellChecker
 from tqdm import tqdm
@@ -14,7 +15,7 @@ class ReviewPreprocessor:
 		class for preprocessing reviews.
 	"""
 
-	def __init__(self, reviews: Series, spell_allowed_words=[], subjectivity_threshold = 0.4):
+	def __init__(self, reviews: Series, nlp:English, spell_allowed_words=[], subjectivity_threshold = 0.4):
 		"""
 		construction method, it assign reviews param to __reviews attribute.
 
@@ -23,6 +24,7 @@ class ReviewPreprocessor:
 		self.__reviews = reviews
 		self.spell_allowed_words = spell_allowed_words
 		self.subjectivity_threshold = subjectivity_threshold
+		self.__nlp = nlp
 
 	def remove_tags(self):
 		"""
@@ -89,12 +91,12 @@ class ReviewPreprocessor:
 		:return:
 		"""
 		for index, review in tqdm(self.__reviews.items()):
-			sentences = sent_tokenize(review)
+			sentences = [sent.text.strip() for sent in self.__nlp(review).sents]
 
 			for index_s, sentence in enumerate(sentences):
 				subjective_score = TextBlob(sentence).subjectivity
 				if subjective_score < self.subjectivity_threshold:
-					del sentences[index_s]
+					sentences.pop(index_s)
 
 			self.__reviews[index] = " ".join(sentences)
 		return self.__reviews
