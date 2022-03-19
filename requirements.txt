@@ -1,0 +1,10 @@
+pandas
+spacy
+numpy
+gensim
+tqdm
+selenium
+nltk
+textblob
+requests
+beautifulsoup4
