@@ -3,7 +3,6 @@ import hydralit_components as hc
 
 def navbar():
 	menu_data = [
-		{'id': 'Scrape Data From Twitter', 'icon': 'fab fa-twitter', 'label': 'Scrape Data From Twitter'},
 		{'id': 'Reviews Preprocessing', 'icon': 'fas fa-cogs', 'label': 'Reviews Preprocessing'},
 		{'id': 'Aspects Extraction', 'icon': 'fas fa-search', 'label': 'Aspects Extraction'},
 		{'id':'Sentiments Classification', 'icon': 'fas fa-angle-double-right', 'label':'Sentiments Classification'},
