@@ -109,7 +109,7 @@ class NLPSentimentClassifier:
 			to_append = []
 			for item in items:
 				for i in item:
-					if i not in self.__explicit_aspects:
+					if i in self.__explicit_aspects:
 						to_add = pd.Series([i, "positive" if item[i] > 0 else "negative", item[i]],
 						                   index=["aspect", "sentiment", "score"])
 						aspects_summary = aspects_summary.append(to_add, ignore_index=True)
