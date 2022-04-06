@@ -91,14 +91,14 @@ class ReviewPreprocessor:
 		:return:
 		"""
 		for index, review in tqdm(self.__reviews.items()):
-			sentences = [sent.text.strip() for sent in self.__nlp(review).sents]
-
-			for index_s, sentence in enumerate(sentences):
+			result = ""
+			for sentence in list(self.__nlp(review).sents):
+				sentence = sentence.text
 				subjective_score = TextBlob(sentence).subjectivity
-				if subjective_score < self.subjectivity_threshold:
-					sentences.pop(index_s)
+				if subjective_score >= self.subjectivity_threshold:
+					result += " " + sentence
 
-			self.__reviews[index] = " ".join(sentences)
+			self.__reviews.loc[index] = result
 		return self.__reviews
 
 	def start(self):
