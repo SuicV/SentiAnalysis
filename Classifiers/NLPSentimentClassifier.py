@@ -44,6 +44,16 @@ class NLPSentimentClassifier:
 				if (token.dep_ == "advmod"):
 					continue
 				elif (token.dep_ == "amod"):
+
+					for child in token.children:
+						# if there's a adj modifier (i.e. very, pretty, etc.) add more weight to sentiment
+						# This could be better updated for modifiers that either positively or negatively emphasize
+						if ((child.dep_ == "amod") or (child.dep_ == "advmod")):
+							sentiment *= 1.5
+						# check for negation words and flip the sign of sentiment
+						if child.dep_ == "neg":
+							sentiment *= -1
+
 					sent_dict[token.head.lemma_.lower()] += sentiment
 				# for opinion words that are adjectives, adverbs, verbs...
 				else:
