@@ -26,6 +26,9 @@ class ExplicitAspectExtractor:
 	def get_frequent_aspects(self, threshold: int):
 		return Counter(self.__aspects).most_common(threshold)
 
+	def get_aspects(self):
+		return self.__aspects
+
 	def start(self, threshold):
 		self.extract_aspects()
 		return self.get_frequent_aspects(threshold)
