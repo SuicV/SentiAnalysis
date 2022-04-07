@@ -3,7 +3,9 @@ import os
 import pandas as pd
 from spacy.lang.en import English
 from tqdm import tqdm
-
+#ignore pandas warning
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 class NLPSentimentClassifier:
 
@@ -19,8 +21,8 @@ class NLPSentimentClassifier:
 			# Load opinion lexicon
 			neg_file = open("../data/opinion-lexicon-English/negative_words.txt", encoding="ISO-8859-1")
 			pos_file = open("../data/opinion-lexicon-English/positive_words.txt", encoding="ISO-8859-1")
-			NLPSentimentClassifier.pos_words = [line.strip() for line in neg_file.readlines()]
-			NLPSentimentClassifier.neg_words = [line.strip() for line in pos_file.readlines()]
+			NLPSentimentClassifier.pos_words = [line.strip() for line in pos_file.readlines()]
+			NLPSentimentClassifier.neg_words = [line.strip() for line in neg_file.readlines()]
 			NLPSentimentClassifier.opinion_words = NLPSentimentClassifier.pos_words + NLPSentimentClassifier.neg_words
 		pass
 
