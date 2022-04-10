@@ -11,20 +11,27 @@ def preprocessing_page():
         df = pd.read_csv(dataset, encoding="utf-8")
         st.write(df)
         nlp = spacy.load("en_core_web_sm")
-        preprocessor = ReviewPreprocessor(df["review"], nlp, ["riad", "dar", "rif"], 0.6)
+        preprocessor = ReviewPreprocessor(df["review"], nlp, ["riad", "dar", "rif"], 0.4)
         # Text Preprocessing
         st.subheader('Text Preprocessing')
         with st.spinner('Wait! text preporocessing in progress'):
             with st.expander('Expand for details'):
-                # remove duplicate rows
+                # remove useless features
                 st.subheader('Remove useless features')
                 df["cleaned_review"] = preprocessor.remove_tags()
                 st.table(df[['review', 'cleaned_review']].head(2))
 
+                # transform reviews to lowercase form
+                st.subheader('Transformation to lowercase')
+                df["cleaned_review"] = preprocessor.lowercase_transformation()
+                st.table(df[['review', 'cleaned_review']].head(2))
+
+                # spelling correction
                 st.subheader('Spelling correction')
                 df["cleaned_review"] = preprocessor.spelling_correction()
                 st.table(df[['review', 'cleaned_review']].head(2))
 
+                # remove objective sentences
                 st.subheader('remove objective sentences')
                 df["cleaned_review"] = preprocessor.remove_objective_sentences()
                 st.table(df[['review', 'cleaned_review']].head(2))

@@ -66,6 +66,10 @@ class ReviewPreprocessor:
 		self.__reviews = self.__reviews.apply(lambda r: emoji_pattern.sub(r'', r))
 		return self.__reviews
 
+	def lowercase_transformation(self):
+		self.__reviews = self.__reviews.apply(lambda r: r.lower())
+		return self.__reviews
+
 	def spelling_correction(self):
 		"""
 		correct misspelled words from reviews. this methode use SpellChecker package.
