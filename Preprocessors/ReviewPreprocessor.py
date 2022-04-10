@@ -1,5 +1,3 @@
-from nltk.tokenize import sent_tokenize
-from nltk.tokenize import WhitespaceTokenizer
 from spacy.lang.en import English
 from textblob import TextBlob
 from spellchecker import SpellChecker
@@ -20,6 +18,9 @@ class ReviewPreprocessor:
 		construction method, it assign reviews param to __reviews attribute.
 
 		:param reviews: reviews to preprocess
+		:param nlp: spacy instance for nlp
+		:param spell_allowed_words: words to add to the dictionary of spellchecker
+		:param subjectivity_threshold: used to remove objective sentences from reviews
 		"""
 		self.__reviews = reviews
 		self.spell_allowed_words = spell_allowed_words
@@ -67,6 +68,9 @@ class ReviewPreprocessor:
 		return self.__reviews
 
 	def lowercase_transformation(self):
+		"""
+		method to transforme a review text to lowercase text
+		"""
 		self.__reviews = self.__reviews.apply(lambda r: r.lower())
 		return self.__reviews
 
