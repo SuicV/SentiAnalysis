@@ -43,7 +43,7 @@ def aspects_extraction_page():
                 if "co_ref_word2vec_model" in st.session_state:
                     coref_aspects_ident_group.model_wv = st.session_state.get("co_ref_word2vec_model")
                 # TODO: save word2vec as pickle file to avoid using session
-                coref_groups = coref_aspects_ident_group.get_co_reference_aspects_groups(0.68)
+                coref_groups = coref_aspects_ident_group.get_co_reference_aspects_groups(0.980)
                 if "co_ref_word2vec_model" not in st.session_state:
                     st.session_state["co_ref_word2vec_model"] = coref_aspects_ident_group.model_wv
                 st.session_state["co_ref_aspects"] = coref_groups
