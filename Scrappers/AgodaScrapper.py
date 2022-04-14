@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 
 
 class AgodaScrapper:
@@ -22,6 +23,7 @@ class AgodaScrapper:
 		chrome_options.add_argument('--disable-blink-features=AutomationControlled')
 		chrome_options.add_argument("--disable-extensions")
 		chrome_options.add_argument("--disable-gpu")
+		chrome_options.add_argument("--start-maximized")
 		chrome_options.add_argument("--headless")
 		self.scrapper = webdriver.Chrome(config_parser["SELENIUM"]["DRIVER_PATH"], options=chrome_options)
 		self.scrapper.implicitly_wait(10)
@@ -37,7 +39,52 @@ class AgodaScrapper:
 			False if there is an Exception
 		"""
 		links = []
+		# open landing page, which contains the search form
+		self.scrapper.get("https://www.agoda.com")
+		
+		close_ad_modal = self.scrapper.find_element(By.CSS_SELECTOR, 'button[class="ab-close-button"][aria-label="Close Message"]')
+		close_ad_modal.click()
+		# type the search tag into search field
+		input_field = self.scrapper.find_element(By.CSS_SELECTOR, 'input[data-selenium="textInput"]')
+		input_field.send_keys(search_tag)
+		input_field.send_keys(Keys.ENTER)
+		sleep(3)
+		self.scrapper.save_screenshot("1.png")
+		# close search modal
+		self.scrapper.execute_script("document.body.click()")
+		
+		# click on search button
+		search_button = self.scrapper.find_element(By.CSS_SELECTOR, "button[data-selenium='searchButton']")
+		self.scrapper.execute_script("arguments[0].click()", search_button)
+		# scroll to bottom page to load more data
+		sleep(5)
+		hotels_list = self.scrapper.find_elements(By.CSS_SELECTOR, "li[data-selenium='hotel-item']")
 
+		self.scrapper.execute_script("window.scrollTo(0, document.body.offsetHeight)")
+		sleep(5)
+		self.scrapper.implicitly_wait(1)
+		for hotel_item in hotels_list:
+			# get hotels metadata
+			# sometimes selenium can't find elements, for that i fill the values with empty string
+			try:
+				hotel_name = hotel_item.find_element(By.CSS_SELECTOR, 'h3[data-selenium="hotel-name"]').text
+			except NoSuchElementException:
+				hotel_name = ""
+				pass
+			try:
+				hotel_score = hotel_item.find_element(By.CSS_SELECTOR, "div[data-element-name='property-card-review'] p").text
+			except NoSuchElementException:
+				hotel_score = ""
+				pass
+			try:
+				hotel_link = f'https://www.agoda.com{hotel_item.find_element(By.CSS_SELECTOR, "a.PropertyCard__Link").get_dom_attribute("href")}'
+			except NoSuchElementException:
+				continue
+
+			links.append({"listing_name": hotel_name, "listing_score": hotel_score, "link": hotel_link})
+			
+		self.scrapper.implicitly_wait(10)
+		print(len(links))
 		return links
 
 	def get_reviews(self, link, num_pages=1):
@@ -111,4 +158,3 @@ class AgodaScrapper:
 			print("no next page available")
 			self.scrapper.implicitly_wait(10)
 			return False
-		
