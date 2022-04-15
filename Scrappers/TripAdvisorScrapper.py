@@ -29,7 +29,7 @@ class TripAdvisorScrapper:
 		
 		:param search_tag: query to search in tripadvisor landing page form
 
-		:return dataframe contains the following columns {'listing_name', 'listing_score', 'link'} or
+		:return list of dicts contains the following keys {'listing_name', 'listing_score', 'link'} or
 			False if there is an Exception
 		"""
 		
@@ -70,12 +70,21 @@ class TripAdvisorScrapper:
 		:param link hotel link
 		:param num_pages maximum number of pages to scrap
 
-		:return links array of dicts {"username", "review_score", "review_title", "review"}
+		:return links array of dicts {"listing_name", "listing_score", "username", "review_score", "review_title", "review"}
 		"""
 		reviews = []
 		print(link)
 		self.scrapper.get(f"{link}#REVIEWS")
+		sleep(1)
 		try:
+			# get hotel name
+			listing_name = self.scrapper.find_element(By.ID, "HEADING").text
+			
+			# get hotel score
+			listing_score = self.scrapper.find_element(By.CSS_SELECTOR, 
+				'div[data-test-target="hr-aft-info"] span[class^="ui_bubble_rating bubble"').get_attribute("class")[-2:]
+			listing_score = f"{listing_score[0]}.{listing_score[1]}"
+			
 			rating_checkboxs = [self.scrapper.find_element(By.ID, "ReviewRatingFilter_5"),
 							self.scrapper.find_element(By.ID, "ReviewRatingFilter_4"),
 							self.scrapper.find_element(By.ID, "ReviewRatingFilter_2"),
@@ -110,7 +119,8 @@ class TripAdvisorScrapper:
 						# get review
 						review_str = review.find_element(By.CSS_SELECTOR, "div._T q._a").text
 						reviews.append({
-							'username': review_holder, 'review_score': review_rating, 'review_title': review_title_str, 'review': review_str
+							'listing_name': listing_name, 'listing_score': listing_score, 'username': review_holder,
+							'review_score': review_rating, 'review_title': review_title_str, 'review': review_str
 						})
 					
 					# break pages for loop if the there is no next page for this rating

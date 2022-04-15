@@ -94,12 +94,16 @@ class AgodaScrapper:
 		:param link hotel link
 		:param num_pages maximum number of pages to scrap
 
-		:return links array of dicts {"username", "review_score", "review_title", "review"}
+		:return links array of dicts {"listing_name", "listing_score", "username", "review_score", "review_title", "review"}
 		"""
 		reviews = []
 		try:
 			# open hotel link
 			self.scrapper.get(f"{link}")
+			# get hotel name
+			listing_name = self.scrapper.find_element(By.CSS_SELECTOR, 'h1[data-selenium="hotel-header-name"]').text
+			# get hotel score
+			listing_score = self.scrapper.find_element(By.CSS_SELECTOR, 'div[data-selenium="hotel-header-review-rating"] h3').text
 			# close check-in date pop-up
 			self.scrapper.execute_script("document.body.click()")
 			sleep(0.5)
@@ -123,9 +127,16 @@ class AgodaScrapper:
 					review_holder = review_section.find_element(By.CSS_SELECTOR, "div.Review-comment-reviewer strong").text
 					review_score = review_section.find_element(By.CSS_SELECTOR, "div.Review-comment-leftScore").text
 					review_title = review_section.find_element(By.CSS_SELECTOR, "p.Review-comment-bodyTitle").text
-					review_text = review_section.find_element(By.CSS_SELECTOR, "p.Review-comment-bodyText").text
+					review_text_els = review_section.find_elements(By.CSS_SELECTOR, "p.Review-comment-bodyText")
+					# sometimes text review will be splited inside many p tags, for that add the for loop to merge them in one 
+					review_text = ""
+					for review_text_el in review_text_els:
+						review_text += f" {review_text_el.text}."
+					review_text = review_text.strip()
 					print(review_holder, review_score, review_title)
 					reviews.append({
+						"listing_name": listing_name,
+						"listing_score": listing_score,
 						"username": review_holder,
 						"review_score": review_score,
 						"review_title": review_title,
