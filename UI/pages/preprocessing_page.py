@@ -38,6 +38,6 @@ def preprocessing_page():
 
         # Download csv file
         csv = df.to_csv(index=False).encode('utf-8')
-        filename = dataset.name.replace('.csv', '_clean.csv')        
+        filename = dataset.name.replace('.csv', '_clean.csv')
         st.download_button("Download the clean data", csv,filename, "text/csv",key='download-csv')
         st.stop()
