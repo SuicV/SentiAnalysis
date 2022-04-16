@@ -1,3 +1,23 @@
+from Scrappers.AgodaScrapper import AgodaScrapper
+from Scrappers.TripAdvisorScrapper import TripAdvisorScrapper
+from Scrappers.BookingScrapper import BookingScrapper
+from time import time
+
+
+
+tripadvisor_scraper = TripAdvisorScrapper()
+hotels_link = tripadvisor_scraper.get_hotels("paris hotels")
+print(len(hotels_link))
+for hotel_link in hotels_link:
+    print(hotel_link)
+
+hotel_reviews = tripadvisor_scraper.get_reviews("https://www.tripadvisor.com/Hotel_Review-g187147-d228694-Reviews-Hotel_Malte_Astotel-Paris_Ile_de_France.html", 1)
+print(hotel_reviews)
+
+tripadvisor_scraper.scrapper.quit()
+
+
+"""
 from Preprocessors.ReviewPreprocessor import ReviewPreprocessor
 import pandas as pd
 import spacy
@@ -20,4 +40,4 @@ aspect_extractor = ExplicitAspectExtractor(data["cleaned_reviews"], nlp)
 aspects = aspect_extractor.start(50)
 print(aspects)
 print(f"extracting aspects {time() - now}s")
-
+"""
