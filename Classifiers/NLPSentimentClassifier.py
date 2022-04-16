@@ -19,8 +19,8 @@ class NLPSentimentClassifier:
 		self.__explicit_aspects = explicit_aspects
 		if NLPSentimentClassifier.opinion_words is None:
 			# Load opinion lexicon
-			neg_file = open("../data/opinion-lexicon-English/negative_words.txt", encoding="ISO-8859-1")
-			pos_file = open("../data/opinion-lexicon-English/positive_words.txt", encoding="ISO-8859-1")
+			neg_file = open("data/opinion-lexicon-English/negative_words.txt", encoding="ISO-8859-1")
+			pos_file = open("data/opinion-lexicon-English/positive_words.txt", encoding="ISO-8859-1")
 			NLPSentimentClassifier.pos_words = [line.strip() for line in pos_file.readlines()]
 			NLPSentimentClassifier.neg_words = [line.strip() for line in neg_file.readlines()]
 			NLPSentimentClassifier.opinion_words = NLPSentimentClassifier.pos_words + NLPSentimentClassifier.neg_words
