@@ -22,7 +22,7 @@ class TripAdvisorScrapper:
 		self.scrapper.implicitly_wait(10)
 		pass
 
-	def get_hotels(self, search_tag):
+	def get_hotels(self, search_tag: str) -> list:
 		"""
 		method to get list of hotels by a search tag.
 		Example "Paris Hotels" will return a list of hotels in Paris
@@ -62,7 +62,7 @@ class TripAdvisorScrapper:
 			return False
 		return links
 
-	def get_reviews(self, link, num_pages):
+	def get_reviews(self, link: str, num_pages: int) -> list:
 		"""
 		scraps reviews in hotel link. this method goes through rating scores (5,4,2,1) and scrap review from
 		each page at this rating score. 
@@ -134,7 +134,7 @@ class TripAdvisorScrapper:
 
 		return reviews
 
-	def go_to_next_page(self):
+	def go_to_next_page(self) -> bool:
 		# go to the next page
 		try:
 			self.scrapper.implicitly_wait(0.5)

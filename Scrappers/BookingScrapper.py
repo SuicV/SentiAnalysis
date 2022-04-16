@@ -14,7 +14,6 @@ class BookingScrapper:
 	def __init__(self):
 		"""
 		constructor method used to initialize chrome driver and class parameters
-		:param output reviews output file
 		"""
 		config_parser = configparser.ConfigParser()
 		config_parser.read(".env")
@@ -26,7 +25,7 @@ class BookingScrapper:
 		self.scrapper = webdriver.Chrome(config_parser["SELENIUM"]["DRIVER_PATH"], options=chrome_options)
 		self.scrapper.implicitly_wait(10)
     
-	def get_hotels(self, search_tag):
+	def get_hotels(self, search_tag : str) -> list:
 		"""
 		method to get list of hotels by a search tag.
 		Example "Paris Hotels" will return a list of hotels in Paris
@@ -58,7 +57,7 @@ class BookingScrapper:
 			return False
 		return links
 
-	def get_reviews(self, link, num_pages=1):
+	def get_reviews(self, link :str, num_pages=1)-> list:
 		"""
 		method to get reviews of a hotel by it's link.
 
@@ -114,7 +113,7 @@ class BookingScrapper:
 
 		return reviews
 
-	def next_page(self):
+	def next_page(self) -> bool:
 		try:
 			self.scrapper.implicitly_wait(0.5)
 			# click on the next page link if it's availabe, if not it will throw NoSuchElementException

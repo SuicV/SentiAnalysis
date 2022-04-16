@@ -28,7 +28,7 @@ class AgodaScrapper:
 		self.scrapper = webdriver.Chrome(config_parser["SELENIUM"]["DRIVER_PATH"], options=chrome_options)
 		self.scrapper.implicitly_wait(10)
     
-	def get_hotels(self, search_tag):
+	def get_hotels(self, search_tag: str) -> list:
 		"""
 		method to get list of hotels by a search tag.
 		Example "Paris Hotels" will return a list of hotels in Paris
@@ -87,7 +87,7 @@ class AgodaScrapper:
 		print(len(links))
 		return links
 
-	def get_reviews(self, link, num_pages=1):
+	def get_reviews(self, link: str, num_pages=1) -> list:
 		"""
 		scraps reviews from hotel link. this method goes through pages and scrap reviews at each page. 
 
@@ -150,7 +150,7 @@ class AgodaScrapper:
 
 		return reviews
 
-	def next_page(self):
+	def next_page(self) -> bool:
 		try:
 			# change implicitly_wait because the button is instantly available, no need to wait
 			self.scrapper.implicitly_wait(0.5)
