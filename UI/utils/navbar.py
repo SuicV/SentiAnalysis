@@ -3,9 +3,10 @@ import hydralit_components as hc
 
 def navbar():
 	menu_data = [
-		{'id': 'Reviews Preprocessing', 'icon': 'fas fa-cogs', 'label': 'Reviews Preprocessing'},
-		{'id': 'Aspects Extraction', 'icon': 'fas fa-search', 'label': 'Aspects Extraction'},
-		{'id':'Sentiments Classification', 'icon': 'fas fa-angle-double-right', 'label':'Sentiments Classification'},
+		{'id': 'Reviews Scraping', 'label': '🕸 Reviews Scraping'},
+		{'id': 'Reviews Preprocessing', 'label': '⚙Reviews Preprocessing'},
+		{'id': 'Aspects Extraction', 'label': '⚗Aspects Extraction'},
+		{'id':'Sentiments Classification', 'label':'😃☹Sentiments Classification'},
 	]
 
 	over_them = {'txc_inacive': '#FFFFFF'}
