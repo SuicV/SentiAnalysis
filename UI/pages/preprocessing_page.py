@@ -1,13 +1,14 @@
 import streamlit as st
+from UI.froms.preprocessing.preprocessing_form import preprocessing_form
 import pandas as pd
 import spacy
 from Preprocessors.ReviewPreprocessor import ReviewPreprocessor
 
+
 def preprocessing_page():
     # Upload dataset
-    st.subheader('Upload Dataset')
-    dataset = st.file_uploader("", type = ['csv'])
-    if dataset is not None:
+    dataset, submit_button = preprocessing_form()
+    if submit_button:
         df = pd.read_csv(dataset, encoding="utf-8")
         st.write(df)
         nlp = spacy.load("en_core_web_sm")
@@ -34,6 +35,10 @@ def preprocessing_page():
                 # remove objective sentences
                 st.subheader('remove objective sentences')
                 df["cleaned_review"] = preprocessor.remove_objective_sentences()
+
+                #drop empty cleaned_reviews
+                df = df[df["cleaned_review"].notna() | (df["cleaned_review"] != "")]
+
                 st.table(df[['review', 'cleaned_review']].head(2))
 
         # Download csv file
