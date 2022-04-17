@@ -43,6 +43,8 @@ class ReviewPreprocessor:
 		self.__reviews = self.__reviews.apply(lambda r: re.sub(r"@\S+", " ", r, flags=re.IGNORECASE))
 		# remove links
 		self.__reviews = self.__reviews.apply(lambda r: re.sub(r"(http(s)?:/|www)\S+", " ", r, flags=re.IGNORECASE))
+		# replace special caracter
+		self.__reviews = self.__reviews.apply(lambda r: re.sub(u"(\u2018|\u2019)", "'", r))
 		# remove emojis
 		emoji_pattern = re.compile("["
 		                           u"\U0001F600-\U0001F64F"  # emoticons
@@ -84,9 +86,9 @@ class ReviewPreprocessor:
 		spell_checker = SpellChecker()
 		spell_checker.word_frequency.load_words(self.spell_allowed_words)
 		for index, review in tqdm(self.__reviews.items()):
-			words = re.findall(r"[\w'’]+", review)
+			words = re.findall(r"[\w']+", review)
 			for word in words:
-				if len(word) >= 2:
+				if len(word) > 2:
 					correction = spell_checker.correction(word)
 					review = review.replace(word, correction)
 			self.__reviews[index] = review

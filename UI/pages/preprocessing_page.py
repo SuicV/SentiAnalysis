@@ -12,7 +12,7 @@ def preprocessing_page():
         df = pd.read_csv(dataset, encoding="utf-8")
         st.write(df)
         nlp = spacy.load("en_core_web_sm")
-        preprocessor = ReviewPreprocessor(df["review"], nlp, ["riad", "dar", "rif"], 0.4)
+        preprocessor = ReviewPreprocessor(df["review"], nlp, ["riad", "dar", "rif", "st"], 0.4)
         # Text Preprocessing
         st.subheader('Text Preprocessing')
         with st.spinner('Wait! text preporocessing in progress'):
