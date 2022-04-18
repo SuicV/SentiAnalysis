@@ -8,9 +8,13 @@ def scrap_by_link_form():
             pass
         with col2:
             agoda_url = st.text_input("agoda hotel url", value="")
+            agoda_option = st.checkbox("Agoda reviews", True)
+            booking_option = st.checkbox("Booking reviews", False)
             pass
+
         num_pages = st.number_input("Number of pages to scrap", min_value=1, max_value=100)
         link_form_submition_button = st.form_submit_button()
-        data = {"tripadvisor_url": tripadvisor_url, "agoda_url": agoda_url, "num_pages": num_pages}
+        data = {"tripadvisor_url": tripadvisor_url, "agoda_url": agoda_url,
+            "num_pages": num_pages, "agoda_option": agoda_option, "booking_option":booking_option}
         return data, link_form_submition_button
     pass

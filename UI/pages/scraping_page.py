@@ -1,4 +1,6 @@
+from os import link
 import streamlit as st
+from Scrappers.BookingAgoda_Scrapper import BookingAgoda_Scrapper
 
 from UI.froms.scraping.scrap_by_search_form import scrap_by_search_form
 from UI.froms.scraping.scrap_by_link_form import scrap_by_link_form
@@ -10,7 +12,7 @@ import pandas as pd
 
 from time import gmtime
 
-def scrap_reviews_by_link (tripadvisor_url, agoda_url, num_pages):
+def scrap_reviews_by_link (params):
     """
     function to apply the process of getting reviews by a defined hotel url
 
@@ -25,17 +27,22 @@ def scrap_reviews_by_link (tripadvisor_url, agoda_url, num_pages):
     file_name = "reviews_"
     progress = st.progress(0)
     scrappers = []
-    if tripadvisor_url != "":
+    if params["tripadvisor_url"] != "":
         scrappers.append(TripAdvisorScrapper)
         file_name += "TripAdvisor_"
-    elif agoda_url != "":
-        scrappers.append(AgodaScrapper)
-        file_name += "Agoda_"
+    elif params["agoda_url"] != "":
+        if params["booking_option"]:
+            scrappers.append(BookingAgoda_Scrapper)
+            file_name += "Booking_"
+        elif params["agoda_option"]:
+            scrappers.append(AgodaScrapper)
+            file_name += "Agoda_"
+
     progress.progress(5)
 
     for step, scraper in enumerate(scrappers):
         scraper = scraper()
-        reviews_temp = pd.DataFrame(s.get_reviews(tripadvisor_url, int(num_pages)))
+        reviews_temp = pd.DataFrame(s.get_reviews(params["tripadvisor_url"], int(params["num_pages"])))
         reviews = pd.concat([reviews, reviews_temp], axis=0, ignore_index=True)
         scraper.scrapper.quit()
         progress.progress(int((step+1)*100/len(scrappers)))
@@ -66,9 +73,20 @@ def scrap_reviews_by_search(search_tag, otas, num_pages, hotels_count):
         elif ota == "Agoda":
             scrappers.append(AgodaScrapper)
             file_name += "Agoda_"
+        elif ota == "Booking":
+            scrappers.append(BookingAgoda_Scrapper)
+            file_name += "Booking_"
+
+    agoda_links = None
     for step, scrapper in enumerate(scrappers):
         scraper = scrapper()
-        links = scraper.get_hotels(search_tag)
+        if isinstance(scrapper, (BookingAgoda_Scrapper, AgodaScrapper)):
+            if agoda_links is None:
+                links = scraper.get_hotels(search_tag)
+            else:
+                links = agoda_links
+        else:
+            links = scraper.get_hotels(search_tag)
         max_url = len(links) if hotels_count > len(links) else hotels_count
         for i in range(max_url):
             reviews_temp = pd.DataFrame(scraper.get_reviews(links[i]["link"], num_pages))
@@ -102,7 +120,7 @@ def scraping_page():
     
     # apply scraping reviews by link
     if link_form_submition_button:
-        reviews, file_name = scrap_reviews_by_link(data_link_form["tripadvisor_url"], data_link_form["agoda_url"], data_link_form["num_pages"])
+        reviews, file_name = scrap_reviews_by_link(data_link_form)
         
         # show scraped reviews
         st.dataframe(reviews)

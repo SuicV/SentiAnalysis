@@ -8,7 +8,7 @@ def scrap_by_search_form():
             search_num_pages = st.number_input("number of reviews pages to scrap", min_value=1, max_value=100)
             pass
         with col2:
-            otas_values = st.multiselect("Online travel agencies", options=["TripAdvisor", "Agoda"])
+            otas_values = st.multiselect("Online travel agencies", options=["TripAdvisor", "Agoda", "Booking"])
             urls_count = st.number_input("Number of urls to scrap", min_value=1, max_value=50)
             pass
         search_form_submition_button = st.form_submit_button("Scrap")

@@ -39,7 +39,6 @@ class BookingAgoda_Scrapper(AgodaScrapper):
 			# click on booking reviews
 			for el in self.scrapper.find_elements(By.CSS_SELECTOR, 'span[data-element-name="review-tab"]'):
 				if "booking.com" in el.text.lower():
-					print("mmmmm")
 					self.scrapper.execute_script("arguments[0].click()", el)
 					break
 			sleep(0.9)
