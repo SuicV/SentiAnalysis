@@ -42,7 +42,7 @@ def scrap_reviews_by_link (params):
 
     for step, scraper in enumerate(scrappers):
         scraper = scraper()
-        reviews_temp = pd.DataFrame(s.get_reviews(params["tripadvisor_url"], int(params["num_pages"])))
+        reviews_temp = pd.DataFrame(scraper.get_reviews(params["tripadvisor_url"], int(params["num_pages"])))
         reviews = pd.concat([reviews, reviews_temp], axis=0, ignore_index=True)
         scraper.scrapper.quit()
         progress.progress(int((step+1)*100/len(scrappers)))
