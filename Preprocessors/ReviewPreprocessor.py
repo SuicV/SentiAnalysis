@@ -119,6 +119,8 @@ class ReviewPreprocessor:
 		"""
 		self.remove_tags()
 		print("remove_tags done")
+		self.lowercase_transformation()
+		print("lowercase_transformation done")
 		self.spelling_correction()
 		print("spelling_correction done")
 		self.remove_objective_sentences()
