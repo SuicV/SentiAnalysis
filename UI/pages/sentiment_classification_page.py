@@ -1,3 +1,4 @@
+from configparser import Interpolation
 import streamlit as st
 from Classifiers.NLPSentimentClassifier import NLPSentimentClassifier
 import spacy
@@ -19,9 +20,11 @@ def sentiment_classification_page():
 			st.write(df)
 			nlp_classifier = NLPSentimentClassifier(df["cleaned_review"], list(dict(st.session_state["explicit_aspects"]).keys()), nlp)
 			classification_result = nlp_classifier.start()
-
+			aggregated_result = classification_result.groupby(["sentiment"]).sum("count").reset_index()
 			sentiment_plot = px.bar(classification_result, x="aspect", y="count", color="sentiment", width=1000, height=500)
 			st.plotly_chart(sentiment_plot, use_container_width=True)
+			pi_plot = px.pie(aggregated_result, names="sentiment", values="count")
+			st.plotly_chart(pi_plot)
 
 	else:
 		st.warning("You can not apply sentiment classification process without extracting aspects")
