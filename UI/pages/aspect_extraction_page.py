@@ -23,9 +23,9 @@ def aspects_extraction_page():
     # when the user clicks on the submition button
     if submited and dataset is not None:
         df = pd.read_csv(dataset, encoding="utf-8")
+        df = df[df['cleaned_review'].notna()]
         st.write(df)
         nlp = spacy.load("en_core_web_sm")
-        df = df[df['cleaned_review'].notna()]
 
         with st.expander("Explicit Aspect Extraction"):
             with st.spinner('Wait! extracting explicit aspects in progress'):
