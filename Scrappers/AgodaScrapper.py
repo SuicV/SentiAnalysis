@@ -20,7 +20,6 @@ class AgodaScrapper:
 		config_parser = configparser.ConfigParser()
 		config_parser.read(".env")
 		chrome_options = Options()
-		chrome_options.add_argument('--disable-blink-features=AutomationControlled')
 		chrome_options.add_argument("--disable-extensions")
 		chrome_options.add_argument("--disable-gpu")
 		chrome_options.add_argument("--start-maximized")
@@ -49,7 +48,7 @@ class AgodaScrapper:
 		input_field.send_keys(search_tag)
 		input_field.send_keys(Keys.ENTER)
 		sleep(3)
-		self.scrapper.save_screenshot("1.png")
+
 		# close search modal
 		self.scrapper.execute_script("document.body.click()")
 		
@@ -57,11 +56,10 @@ class AgodaScrapper:
 		search_button = self.scrapper.find_element(By.CSS_SELECTOR, "button[data-selenium='searchButton']")
 		self.scrapper.execute_script("arguments[0].click()", search_button)
 		# scroll to bottom page to load more data
+		self.scrapper.execute_script("window.scrollTo(0, document.body.offsetHeight)")
 		sleep(5)
 		hotels_list = self.scrapper.find_elements(By.CSS_SELECTOR, "li[data-selenium='hotel-item']")
 
-		self.scrapper.execute_script("window.scrollTo(0, document.body.offsetHeight)")
-		sleep(5)
 		self.scrapper.implicitly_wait(1)
 		for hotel_item in hotels_list:
 			# get hotels metadata
@@ -84,7 +82,6 @@ class AgodaScrapper:
 			links.append({"listing_name": hotel_name, "listing_score": hotel_score, "link": hotel_link})
 			
 		self.scrapper.implicitly_wait(10)
-		print(len(links))
 		return links
 
 	def get_reviews(self, link: str, num_pages=1) -> list:
