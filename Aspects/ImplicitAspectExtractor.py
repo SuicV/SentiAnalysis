@@ -36,7 +36,7 @@ of Implicit Aspects in Aspect‑Based Sentiment Analysis (DIO: 10.1007/s42979-02
 			doc = self.__nlp(review)
 			for sentence in doc.sents:
 				# get explicit aspects from sentence
-				aspects_in_sentence = [i for i in self.__explicit_aspects if i in sentence.text.lower()]
+				aspects_in_sentence = [i for i in self.__explicit_aspects if i in sentence.text]
 				# opinionated sentence but it does not contain explicit aspect word
 				if len(aspects_in_sentence) == 0:
 					# extract ADJ
