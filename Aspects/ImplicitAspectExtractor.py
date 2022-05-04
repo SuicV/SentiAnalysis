@@ -2,7 +2,7 @@ import pandas as pd
 from spacy.lang.en import English
 from spacy.matcher import Matcher
 from tqdm import tqdm
-
+from Classifiers.NLPImplicitAspectsClassifier import NLPImplicitAspectsClassifier
 
 class ImplicitAspectExtractor:
 	"""
@@ -24,8 +24,8 @@ of Implicit Aspects in Aspect‑Based Sentiment Analysis (DIO: 10.1007/s42979-02
 		self.__co_occurrence_matrix = co_occurrence_matrix
 
 	def extract_implicit_aspects(self):
-		result = pd.DataFrame(columns=["review_id", "sentence", "implicit_aspects"])
-
+		result = pd.DataFrame(columns=["review_id", "sentence", "implicit_aspects", "classification"])
+		implicit_aspect_classifier = NLPImplicitAspectsClassifier()
 		# crate pattern for spacy matcher
 		pattern = [{"POS": "ADJ"}]
 		matcher = Matcher(self.__nlp.vocab)
@@ -42,17 +42,23 @@ of Implicit Aspects in Aspect‑Based Sentiment Analysis (DIO: 10.1007/s42979-02
 					# extract ADJ
 					extracted_ADJS = matcher(sentence)
 					implicit_aspects = []
+					classification = []
 					for id_matcher, start, end in extracted_ADJS:
 						sentiment_word = sentence[start:end].text
 						if sentiment_word in sentiment_words:
 							# get the highest co-occurred explicit aspect with sentiment word
 							implicit_aspect = self.__co_occurrence_matrix.loc[sentiment_word].sort_values(ascending=False).index[0]
 							implicit_aspects.append(implicit_aspect)
+							classification_result = implicit_aspect_classifier.feature_sentiment(sentence, start, implicit_aspect)
+							if classification_result["sentiment"] != 0:
+								classification.append(classification_result)
 					# add implicit aspects and sentence to the result dataframe
-					if len(implicit_aspects) > 0:
+					if len(classification) > 0:
 						result = result.append({
 							"review_id": id_,
 							"sentence": sentence.text,
-							"implicit_aspects": implicit_aspects
+							"implicit_aspects": implicit_aspects,
+							"classification": classification
 						}, ignore_index=True)
-		return result
+
+		return (result, implicit_aspect_classifier.aspects_summary)
