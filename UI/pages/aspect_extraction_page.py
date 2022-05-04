@@ -53,5 +53,7 @@ def aspects_extraction_page():
             with st.spinner('Wait! extracting implicit aspects in progress'):
                 co_occurence_matrix = coref_aspects_ident_group.get_co_occurrence_matrix()
                 implicit_aspect_extractor = ImplicitAspectExtractor(df["cleaned_review"], co_occurence_matrix, nlp)
-                df_implicit_aspects = implicit_aspect_extractor.extract_implicit_aspects()
+                df_implicit_aspects, implicit_aspects_summary = implicit_aspect_extractor.extract_implicit_aspects()
                 st.write(df_implicit_aspects)
+                
+                st.session_state['implicit_aspect_summary'] = implicit_aspects_summary.groupby(["aspect", "sentiment"]).size().reset_index(name="count").sort_values("count", ascending=False)
