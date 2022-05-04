@@ -125,7 +125,5 @@ class NLPSentimentClassifier:
 						to_add = pd.Series([i, "positive" if item[i] > 0 else "negative", item[i]],
 						                   index=["aspect", "sentiment", "score"])
 						aspects_summary = aspects_summary.append(to_add, ignore_index=True)
-		groped_aspects_summary = aspects_summary.groupby(["aspect", "sentiment"]).size().reset_index(
-			name="count").sort_values("count", ascending=False)
-		return groped_aspects_summary
+		return aspects_summary
 	pass
