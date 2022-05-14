@@ -87,6 +87,8 @@ def scrap_reviews_by_search(search_tag, otas, num_pages, hotels_count):
                 links = agoda_links
         else:
             links = scraper.get_hotels(search_tag)
+        if links == False:
+            continue
         max_url = len(links) if hotels_count > len(links) else hotels_count
         for i in range(max_url):
             reviews_temp = pd.DataFrame(scraper.get_reviews(links[i]["link"], num_pages))

@@ -13,7 +13,7 @@ def scrap_by_link_form():
             pass
 
         num_pages = st.number_input("Number of pages to scrap", min_value=1, max_value=100)
-        link_form_submition_button = st.form_submit_button()
+        link_form_submition_button = st.form_submit_button("Scrap")
         data = {"tripadvisor_url": tripadvisor_url, "agoda_url": agoda_url,
             "num_pages": num_pages, "agoda_option": agoda_option, "booking_option":booking_option}
         return data, link_form_submition_button

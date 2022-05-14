@@ -5,7 +5,9 @@ from Aspects.ExplicitAspectExtractor import ExplicitAspectExtractor
 from Aspects.CoRefAspectIdentGrouping import CoRefAspectIdentGrouping
 from Aspects.ImplicitAspectExtractor import ImplicitAspectExtractor
 import plotly.express as px
-
+from utils.coreference_graph import coreference_graph
+from streamlit.components.v1 import html
+from gensim.models import Word2Vec
 
 def aspects_extraction_page():
     # configuration form
@@ -33,21 +35,19 @@ def aspects_extraction_page():
                 extracted_aspects = explicit_aspects_extractor.start(aspects_number)
                 st.session_state["explicit_aspects"] = extracted_aspects
                 aspects_df = pd.DataFrame(extracted_aspects, columns=["aspects", "frequency"])
-            st.write(aspects_df.shape)
             aspects_plot = px.bar(aspects_df, x="aspects", y="frequency")
             st.plotly_chart(aspects_plot)
 
         with st.expander("Co-reference aspects identification and grouping"):
             with st.spinner('Wait! Co-reference aspects identification and grouping in progress'):
                 coref_aspects_ident_group = CoRefAspectIdentGrouping(df, dict(extracted_aspects), nlp)
-                if "co_ref_word2vec_model" in st.session_state:
-                    coref_aspects_ident_group.model_wv = st.session_state.get("co_ref_word2vec_model")
-                # TODO: save word2vec as pickle file to avoid using session
-                coref_groups = coref_aspects_ident_group.get_co_reference_aspects_groups(0.980)
-                if "co_ref_word2vec_model" not in st.session_state:
-                    st.session_state["co_ref_word2vec_model"] = coref_aspects_ident_group.model_wv
+                coref_aspects_ident_group.model_wv = Word2Vec.load("100K_reviews_model_sg_hs_10.pkl")
+
+                coref_groups = coref_aspects_ident_group.get_co_reference_aspects_groups(0.5)
+
                 st.session_state["co_ref_aspects"] = coref_groups
-                st.write(coref_groups)
+                coreference_graph(coref_groups)
+                html(open("temp_html.html", "r", encoding="utf-8").read(), width=1000, height=550)
 
         with st.expander("Implicit aspects extraction"):
             with st.spinner('Wait! extracting implicit aspects in progress'):
