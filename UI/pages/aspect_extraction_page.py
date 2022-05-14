@@ -47,7 +47,10 @@ def aspects_extraction_page():
 
                 st.session_state["co_ref_aspects"] = coref_groups
                 coreference_graph(coref_groups)
-                html(open("temp_html.html", "r", encoding="utf-8").read(), width=1000, height=550)
+                
+                htmlfile = open("temp_html.html", "r", encoding="utf-8")
+                html(htmlfile.read(), width=1000, height=550)
+                htmlfile.close()
 
         with st.expander("Implicit aspects extraction"):
             with st.spinner('Wait! extracting implicit aspects in progress'):
