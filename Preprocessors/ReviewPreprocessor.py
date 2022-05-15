@@ -2,10 +2,29 @@ from spacy.lang.en import English
 from textblob import TextBlob
 from spellchecker import SpellChecker
 from tqdm import tqdm
-from pandas import Series
-
+from pandas import Series, concat
+import concurrent.futures
 import re
+from numpy import array_split
 
+
+def spelling_correction(reviews, spell_allowed_words):
+	"""
+	correct misspelled words from reviews. this methode use SpellChecker package.
+	check documentation of SpellChecker in this link https://pyspellchecker.readthedocs.io/en/latest/
+
+	:return corrected reviews
+	"""
+	spell_checker = SpellChecker()
+	spell_checker.word_frequency.load_words(spell_allowed_words)
+	for index, review in reviews.items():
+		words = re.findall(r"[\w']+", review)
+		for word in words:
+			if len(word) > 2:
+				correction = spell_checker.correction(word)
+				review = review.replace(word, correction)
+		reviews[index] = review
+	return reviews
 
 class ReviewPreprocessor:
 	"""
@@ -81,7 +100,7 @@ class ReviewPreprocessor:
 		correct misspelled words from reviews. this methode use SpellChecker package.
 		check documentation of SpellChecker in this link https://pyspellchecker.readthedocs.io/en/latest/
 
-		:return: None
+		:return: corrected reviews
 		"""
 		spell_checker = SpellChecker()
 		spell_checker.word_frequency.load_words(self.spell_allowed_words)
@@ -92,6 +111,28 @@ class ReviewPreprocessor:
 					correction = spell_checker.correction(word)
 					review = review.replace(word, correction)
 			self.__reviews[index] = review
+		return self.__reviews
+
+	def pararel_spelling_correction(self, workers=4):
+		df_results = []
+		# constructing process pool
+		with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as executor:
+			# split data on number of process and run each process
+			results = [ executor.submit(spelling_correction, df, self.spell_allowed_words) for df in array_split(self.__reviews, workers) ]
+			# get result when a process is finished.
+			for result in concurrent.futures.as_completed(results):
+				try:
+					df_results.append(result.result())
+				except Exception as ex:
+					print(str(ex))
+					pass
+		# concat results in one series
+		r = Series(dtype="string")
+		for i in df_results:
+			r = concat([r, i])
+		r = r.sort_index()
+
+		self.__reviews = r
 		return self.__reviews
 
 	def remove_objective_sentences(self):

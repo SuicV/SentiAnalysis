@@ -29,7 +29,7 @@ def preprocessing_page():
 
                 # spelling correction
                 st.subheader('Spelling correction')
-                df["cleaned_review"] = preprocessor.spelling_correction()
+                df["cleaned_review"] = preprocessor.pararel_spelling_correction()
                 st.table(df[['review', 'cleaned_review']].head(2))
 
                 # remove objective sentences
