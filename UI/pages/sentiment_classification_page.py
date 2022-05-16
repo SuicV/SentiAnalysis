@@ -1,4 +1,3 @@
-from configparser import Interpolation
 import streamlit as st
 from Classifiers.NLPSentimentClassifier import NLPSentimentClassifier
 import spacy
