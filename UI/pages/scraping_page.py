@@ -13,6 +13,7 @@ import pandas as pd
 from time import gmtime
 
 def scrap_reviews_by_link (params):
+    print(params)
     """
     function to apply the process of getting reviews by a defined hotel url
 
@@ -42,7 +43,10 @@ def scrap_reviews_by_link (params):
 
     for step, scraper in enumerate(scrappers):
         scraper = scraper()
-        reviews_temp = pd.DataFrame(scraper.get_reviews(params["tripadvisor_url"], int(params["num_pages"])))
+
+        link = params["tripadvisor_url"] if isinstance(scraper, TripAdvisorScrapper) else params["agoda_url"]
+        
+        reviews_temp = pd.DataFrame(scraper.get_reviews(link, int(params["num_pages"])))
         reviews = pd.concat([reviews, reviews_temp], axis=0, ignore_index=True)
         scraper.scrapper.quit()
         progress.progress(int((step+1)*100/len(scrappers)))
