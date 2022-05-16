@@ -118,7 +118,6 @@ class NLPSentimentClassifier:
 		result = self.__reviews.apply(lambda review: self.extract_sentiment_aspect(review))
 		aspects_summary = pd.DataFrame(columns=["aspect", "sentiment", "score"])
 		for id_, items in tqdm(result.items()):
-			to_append = []
 			for item in items:
 				for i in item:
 					if i in self.__explicit_aspects:
