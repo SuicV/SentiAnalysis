@@ -8,6 +8,8 @@ import plotly.express as px
 from utils.coreference_graph import coreference_graph
 from streamlit.components.v1 import html
 from gensim.models import Word2Vec
+from streamlit.components.v1 import html
+
 
 def aspects_extraction_page():
     # configuration form
@@ -35,7 +37,10 @@ def aspects_extraction_page():
                 extracted_aspects = explicit_aspects_extractor.start(aspects_number)
                 st.session_state["explicit_aspects"] = extracted_aspects
                 aspects_df = pd.DataFrame(extracted_aspects, columns=["aspects", "frequency"])
-            aspects_plot = px.bar(aspects_df, x="aspects", y="frequency")
+            aspects_plot = px.bar( aspects_df,
+                x="aspects", y="frequency",
+                title = "Explicit aspects distribution.",
+                width=1200, height=500)
             st.plotly_chart(aspects_plot)
 
         with st.expander("Co-reference aspects identification and grouping"):
@@ -48,6 +53,10 @@ def aspects_extraction_page():
                 st.session_state["co_ref_aspects"] = coref_groups
                 coreference_graph(coref_groups)
                 
+                htmlfile = open("coref_colors_guide.html", "r", encoding="utf-8")
+                html(htmlfile.read(), height=50)
+                htmlfile.close()
+
                 htmlfile = open("temp_html.html", "r", encoding="utf-8")
                 html(htmlfile.read(), width=1000, height=550)
                 htmlfile.close()
@@ -57,6 +66,11 @@ def aspects_extraction_page():
                 co_occurence_matrix = coref_aspects_ident_group.get_co_occurrence_matrix()
                 implicit_aspect_extractor = ImplicitAspectExtractor(df["cleaned_review"], co_occurence_matrix, nlp)
                 df_implicit_aspects, implicit_aspects_summary = implicit_aspect_extractor.extract_implicit_aspects()
-                st.write(df_implicit_aspects)
                 
-                st.session_state['implicit_aspect_summary'] = implicit_aspects_summary.groupby(["aspect", "sentiment"]).size().reset_index(name="count").sort_values("count", ascending=False)
+                grouped_inplicit_aspects_summary = implicit_aspects_summary.groupby(["aspect"]).size().reset_index(name="frequency").sort_values("frequency", ascending=False)
+  
+                st.plotly_chart(px.bar(grouped_inplicit_aspects_summary,
+                    x="aspect", y="frequency",
+                    title="Implicit aspect distribution.",
+                    width=1200, height=500))
+                st.session_state['implicit_aspect_summary'] = implicit_aspects_summary
