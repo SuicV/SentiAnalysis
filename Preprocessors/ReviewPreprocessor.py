@@ -46,6 +46,15 @@ class ReviewPreprocessor:
 		self.subjectivity_threshold = subjectivity_threshold
 		self.__nlp = nlp
 
+	def drop_empty(self):
+		"""
+		drop empty reviews
+
+		:return: reviews
+		"""
+		self.__reviews = self.__reviews[self.__reviews != ""]
+		return self.__reviews
+
 	def remove_tags(self):
 		"""
 		remove useless feature from reviews.

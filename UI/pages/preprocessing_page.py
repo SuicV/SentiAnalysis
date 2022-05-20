@@ -37,7 +37,7 @@ def preprocessing_page():
                 df["cleaned_review"] = preprocessor.remove_objective_sentences()
 
                 #drop empty cleaned_reviews
-                df = df[df["cleaned_review"].notna() | (df["cleaned_review"] != "")]
+                df["cleaned_review"] = preprocessor.drop_empty()
 
                 st.table(df[['review', 'cleaned_review']].head(2))
 
