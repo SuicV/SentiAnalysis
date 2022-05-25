@@ -17,10 +17,17 @@ def word_sentiment(word, POS, threshold = 0.2):
     wn_pos = __get_wordnet_pos(POS)
     if wn_pos :
         synsets = snw.senti_synsets(word, wn_pos)
-        neg_scores = [synset.neg_score() for synset in synsets if synset.neg_score() > 0]
-        pos_scores = [synset.pos_socre() for synset in synsets if synset.pos_score() > 0]
-        neg_score = mean(neg_scores) if len(neg_scores) > 0  else 0
-        pos_score = mean(pos_scores) if len(pos_scores) > 0  else 0
+
+        neg_scores = []
+        pos_scores = []
+
+        for synset in synsets:
+            neg_scores.append(synset.neg_score())
+            pos_scores.append(synset.pos_score())
+
+        neg_score = max(neg_scores) if len(neg_scores) > 0 else 0
+        pos_score = max(pos_scores) if len(pos_scores) > 0 else 0
+
         if pos_score > neg_score and pos_score >= threshold:
             return 1
         elif neg_score > pos_score and neg_score >= threshold:
