@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+side implementation/*
 notebooks/downloaded_fasttext_wiki_news_subwords_300.pkl
 temp_html.html
 __pycache__/
