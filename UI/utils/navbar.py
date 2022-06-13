@@ -5,7 +5,7 @@ def navbar():
 	menu_data = [
 		{'id': 'Reviews Scraping', 'label': '🕸 Reviews Scraping'},
 		{'id': 'Reviews Preprocessing', 'label': '⚙Reviews Preprocessing'},
-		{'id': 'Aspects Extraction', 'label': '⚗Aspects Extraction'},
+		#{'id': 'Aspects Extraction', 'label': '⚗Aspects Extraction'},
 		{'id':'Sentiments Classification', 'label':'😃☹Sentiments Classification'},
 	]
 
