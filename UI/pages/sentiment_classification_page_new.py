@@ -25,7 +25,6 @@ def plot_word_cloud(explicite_aspects):
 def sentiment_classification_page():
 	nlp = spacy.load("en_core_web_sm")
 
-	#if "explicit_aspects" in st.session_state and "implicit_aspect_summary" in st.session_state:
 	with st.expander("Hotel aspects"):
 		file = open('explicit_aspects.txt', 'r')
 		explicite_aspects = eval(file.readline())
@@ -56,10 +55,9 @@ def sentiment_classification_page():
 		df = df[df['cleaned_review'].notna()]
 		st.write(df)
 		
-		nlp_classifier = NLPSentimentClassifier(df["cleaned_review"], list(dict(st.session_state["explicit_aspects"]).keys()), nlp)
+		nlp_classifier = NLPSentimentClassifier(df["cleaned_review"], list(explicite_aspects), nlp)
 		
 		classification_result = nlp_classifier.start()
-		classification_result = pd.concat([classification_result, st.session_state['implicit_aspect_summary']], ignore_index=True)
 		
 		grouped_classification_result = classification_result.groupby(["aspect", "sentiment"]).size().reset_index(name="count").sort_values("count", ascending=False)
 		sentiment_plot = px.bar(grouped_classification_result, x="aspect", y="count", color="sentiment", width=1000, height=500)
@@ -70,6 +68,4 @@ def sentiment_classification_page():
 		st.plotly_chart(sentiment_plot, use_container_width=True)
 		st.plotly_chart(pi_plot)
 
-	#else:
-	#	st.warning("You can not apply sentiment classification process without extracting aspects")
 	pass
